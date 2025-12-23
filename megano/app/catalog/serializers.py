@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Tag, Review, Product, Specification, Sale
+from .models import Category, Tag, Review, Product, Specification, Sales
 
 from app.core.serializers import ImageSerializer
 
@@ -89,17 +89,17 @@ class ProductFullSerializer(serializers.ModelSerializer):
         )
 
 
-class SaleSerializer(serializers.ModelSerializer):
+class SalesSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(
         source="product.price",
         max_digits=10,
         decimal_places=2
     )
     title = serializers.CharField(source="product.title")
-    images = ImageSerializer(source="product.images", many=True)
+    images = serializers.SerializerMethodField()
 
     class Meta:
-        model = Sale
+        model = Sales
         fields = (
             "id",
             "price",
@@ -109,3 +109,6 @@ class SaleSerializer(serializers.ModelSerializer):
             "title",
             "images"
         )
+
+    def get_images(self, obj):
+        return [img.src for img in obj.product.images.all()]

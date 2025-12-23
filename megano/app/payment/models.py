@@ -1,9 +1,12 @@
 from django.db import models
 
-from app.order.models import Order
+from app.orders.models import Order
 
 
 class Payment(models.Model):
+    """Модель Payment - это модель оплаты
+    в интернет-магазине"""
+
     order = models.OneToOneField(
         Order,
         on_delete=models.CASCADE,

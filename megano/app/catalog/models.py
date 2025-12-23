@@ -6,7 +6,7 @@ from app.users.models import User
 
 
 class Category(models.Model):
-    """Модель Category представляет категории,
+    """Модель Category - это модель категорий товаров,
     которые представлены в интернет-магазине"""
 
     title = models.CharField(max_length=255)
@@ -30,10 +30,16 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
+    """Модель Tag - это модель "тэгов" товаров,
+        которые представлены в интернет-магазине"""
+
     name = models.CharField(max_length=255, unique=True)
 
 
 class Review(models.Model):
+    """Модель Review - это модель отзывов на товары,
+        которые представлены в интернет-магазине"""
+
     product = models.ForeignKey(
         "Product",
         on_delete=models.CASCADE,
@@ -62,6 +68,9 @@ class Review(models.Model):
 
 
 class Specification(models.Model):
+    """Модель Specification - это модель характеристик товаров,
+        которые представлены в интернет-магазине"""
+
     product = models.ForeignKey(
         "Product",
         on_delete=models.CASCADE,
@@ -72,6 +81,9 @@ class Specification(models.Model):
 
 
 class Product(models.Model):
+    """Модель Product - это модель товаров,
+        которые представлены в интернет-магазине"""
+
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -100,12 +112,18 @@ class Product(models.Model):
         decimal_places=1,
         default=0
     )
+    sortIndex = models.IntegerField(default=0)
+    purchases = models.IntegerField(default=0)
+    limited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
 
-class Sale(models.Model):
+class Sales(models.Model):
+    """Модель Sales - это модель скидки на товары,
+        которые представлены в интернет-магазине"""
+
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,

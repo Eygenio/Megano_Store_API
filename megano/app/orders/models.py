@@ -6,6 +6,9 @@ from app.catalog.models import Product, Category, Tag
 
 
 class Order(models.Model):
+    """Модель Order - это общая модель заказа
+    в интернет-магазине"""
+
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -29,6 +32,9 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """Модель OrderItem - это модель заказа товаров
+    в интернет-магазине"""
+
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
