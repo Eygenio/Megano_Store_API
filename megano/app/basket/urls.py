@@ -1,8 +1,10 @@
-from django.urls import path, include
+from django.urls import path
+
+from .views import BasketAPIView
 
 
 app_name ="basket"
 
 urlpatterns = [
-    # path('', basket),
+    path("api/basket/", BasketAPIView.as_view(), name="basket"),
 ]
