@@ -1,10 +1,12 @@
-from django.urls import path, include
+from django.urls import path
+
+from .views import ProfileAPIView, ProfilePasswordAPIView, ProfileAvatarAPIView
 
 
 app_name = "users"
 
 urlpatterns = [
-    # path('', profile),
-    # path('password/', change_password),
-    # path('avatar/', change_avatar),
+    path("", ProfileAPIView.as_view(), name="profile"),
+    path("password/", ProfilePasswordAPIView.as_view(), name="change_password"),
+    path("avatar/", ProfileAvatarAPIView.as_view(), name="change_avatar"),
 ]

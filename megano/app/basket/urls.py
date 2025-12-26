@@ -6,5 +6,5 @@ from .views import BasketAPIView
 app_name ="basket"
 
 urlpatterns = [
-    path("api/basket/", BasketAPIView.as_view(), name="basket"),
+    path("", BasketAPIView.as_view(), name="basket"),
 ]

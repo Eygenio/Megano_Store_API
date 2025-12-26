@@ -6,5 +6,5 @@ from .views import PaymentAPIView
 app_name = "payment"
 
 urlpatterns = [
-    path("api/payment/<int:id>", PaymentAPIView.as_view(), name="payment"),
+    path("<int:id>/", PaymentAPIView.as_view(), name="payment"),
 ]

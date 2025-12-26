@@ -1,9 +1,10 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from app.core.models import Image
 
 
-class User(models.Model):
+class User(AbstractUser):
     """Модель User - это модель пользователя,
         которые зарегистрированы в интернет-магазине"""
 

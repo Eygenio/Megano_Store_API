@@ -20,24 +20,24 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('frontend.urls')),
+    path("admin/", admin.site.urls),
+    path("", include("frontend.urls")),
 
     #users (auth, profile)
-    path('', include('app.users.auth_urls')),
-    path('profile/', include('app.users.urls')),
+    path("", include("app.users.auth_urls")),
+    path("api/profile/", include("app.users.urls")),
 
     #catalog (categories, catalog, product(s), sales, banners)
-    path('', include('app.catalog.urls')),
+    path("api/", include("app.catalog.urls")),
 
     #basket
-    path('basket/', include('app.basket.urls')),
+    path("api/basket/", include("app.basket.urls")),
 
     #orders
-    path('orders/', include('app.orders.urls')),
+    path("api/orders/", include("app.orders.urls")),
 
     #payment
-    path('payment/', include('app.payment.urls')),
+    path("api/payment/", include("app.payment.urls")),
 ]
 
 if settings.DEBUG:
