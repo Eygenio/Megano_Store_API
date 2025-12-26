@@ -1,10 +1,9 @@
-from django.shortcuts import render
+from django.contrib.auth import login, logout, update_session_auth_hash
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework import status
 
-from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SignUpSerializer, SignInSerializer
 from app.core.models import Image
 
 class ProfileAPIView(APIView):
@@ -12,15 +11,7 @@ class ProfileAPIView(APIView):
         if not request.user.is_authenticated:
             return Response(status=401)
 
-        user = User.objects.get(id=request.data.get("id"))
-
-        user = get_object_or_404(
-            User.objects
-            .filter(id=request.user.id)
-            .select_related("avatar")
-        )
-
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
     def post(self, request):
@@ -46,12 +37,16 @@ class ProfilePasswordAPIView(APIView):
 
         request.user.set_password(password)
         request.user.save()
+        update_session_auth_hash(request, request.user)
 
         return Response({"status": "password changed"})
 
 
 class ProfileAvatarAPIView(APIView):
     def post(self, request):
+        if not request.user.is_authenticated:
+            return Response(status=401)
+
         user = request.user
 
         image = Image.objects.create(
@@ -66,3 +61,25 @@ class ProfileAvatarAPIView(APIView):
             "src": image.src,
             "alt": image.alt
         })
+
+
+class SignUpAPIView(APIView):
+    def post(self, request):
+        serializer = SignUpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+class SignInAPIView(APIView):
+    def post(self, request):
+        serializer = SignInSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        login(request, serializer.validated_data["user"])
+        return Response(status=status.HTTP_200_OK)
+
+
+class SignOutAPIView(APIView):
+    def post(self, request):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)

@@ -1,4 +1,3 @@
-from math import ceil
 from django.core.paginator import Paginator
 
 def paginate_queryset(queryset, request, per_page=8):
@@ -8,6 +7,6 @@ def paginate_queryset(queryset, request, per_page=8):
 
     return {
         "items": page_obj.object_list,
-        "current_page": page,
+        "currentPage": page,
         "lastPage": paginator.num_pages
     }

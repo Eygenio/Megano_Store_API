@@ -24,7 +24,7 @@ urlpatterns = [
     path("", include("frontend.urls")),
 
     #users (auth, profile)
-    path("", include("app.users.auth_urls")),
+    path("api/", include("app.users.auth_urls")),
     path("api/profile/", include("app.users.urls")),
 
     #catalog (categories, catalog, product(s), sales, banners)

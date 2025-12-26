@@ -11,7 +11,7 @@ from .serializers import PaymentSerializer
 
 class PaymentAPIView(APIView):
     def post(self, request, id):
-        order = get_object_or_404(Order.objects.filter(id=id))
+        order = get_object_or_404(Order, id=id)
 
         if hasattr(order, "payment"):
             return Response(
@@ -25,7 +25,7 @@ class PaymentAPIView(APIView):
         Payment.objects.create(
             order=order,
             status="paid",
-            transactionID=f"TX-{order.id}"
+            transactionId=f"TX-{order.id}"
         )
 
         order.status = "paid"

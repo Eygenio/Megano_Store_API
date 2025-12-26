@@ -1,14 +1,10 @@
-from os import cpu_count
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from app.catalog.models import Product
 from .models import Basket
-from .serializers import BasketSerializer
-from ..catalog.serializers import TagSerializer
-from ..core.serializers import ImageSerializer
+from .utils import build_product_short
 
 
 def get_session_basket(request):
@@ -22,45 +18,34 @@ def get_session_basket(request):
 
 class BasketAPIView(APIView):
     def get(self, request):
+        result = []
+
         if request.user.is_authenticated:
-            basket = (
+            items = (
                 Basket.objects
                 .filter(user=request.user)
                 .select_related("product", "product__category")
                 .prefetch_related("product__images", "product__tags")
             )
-            serializer = BasketSerializer(basket)
-            return Response(serializer.data)
+            for item in items:
+                result.append(build_product_short(item.product, item.count))
+            return Response(result)
 
-        session_basket = get_session_basket(request)
-        products = Product.objects.filter(id__in=session_basket.keys()).select_related("category").prefetch_related("images", "tags")
-        result = []
+        basket = request.session.get("basket", {})
+        products = Product.objects.filter(id__in=basket.keys()).select_related("category").prefetch_related("images", "tags")
         for product in products:
-            count = session_basket[str(product.id)]["count"]
-            result.append({
-                "id": product.id,
-                "category": product.category_id,
-                "price": product.price * count,
-                "count": count,
-                "date": None,
-                "title": product.title,
-                "description": product.description,
-                "freeDelivery": product.freeDelivery,
-                "images": ImageSerializer(product.images.all(), many=True).data,
-                "tags": TagSerializer(product.tags.all(), many=True).data,
-                "reviews":  product.reviews,
-                "rating": product.rating,
-            })
+            count = basket[str(product.id)]["count"]
+            result.append(build_product_short(product, count))
+
         return Response(result)
 
     def post(self, request):
-        product_id = request.data.get("id")
+        product_id = str(request.data.get("id"))
         count = int(request.data.get("count", 1))
-
         product = get_object_or_404(Product, id=product_id)
 
         if request.user.is_authenticated:
-            basket_item, created = Basket.objects.get_or_create(
+            item, created = Basket.objects.get_or_create(
                 user=request.user,
                 product=product,
                 defaults={
@@ -69,53 +54,44 @@ class BasketAPIView(APIView):
                 }
             )
             if not created:
-                basket_item.cont += count
-                basket_item.price = basket_item.count * product.price
-                basket_item.save()
+                item.count += count
+                item.price = item.count * product.price
+                item.save()
+            return Response(status=200)
 
-            serializer = BasketSerializer(basket_item)
-            return Response(serializer.data)
-
-        basket = get_session_basket(request)
-        if product_id in basket:
-            basket[product_id]["count"] += count
-        else:
-            basket[product_id] = {"count": count}
-
+        basket = request.session.setdefault("basket", {})
+        basket.setdefault(product_id, {"count": 0})
+        basket[product_id]["count"] += count
         request.session.modified = True
-
-        return Response(["product added"])
+        return Response(status=200)
 
     def delete(self, request):
-        basket_id = request.data.get("id")
+        product_id = str(request.data.get("id"))
         count = int(request.data.get("count", 0))
 
-        if request.user_is_authenticated:
-            basket_item = get_object_or_404(
+        if request.user.is_authenticated:
+            item = get_object_or_404(
                 Basket,
-                id=basket_id,
+                product_id=product_id,
                 user=request.user
             )
-            if count >= basket_item.count:
-                basket_item.delete()
+            if count >= item.count:
+                item.delete()
             else:
-                basket_item.count -= count
-                basket_item.price = basket_item.count * basket_item.product.price
-                basket_item.save()
+                item.count -= count
+                item.price = item.count * item.product.price
+                item.save()
 
-            return Response(["Items deleted"])
+            return Response(status=200)
 
-        basket = get_session_basket(request)
-        if basket_id not in basket:
-            return Response(["Item not found"])
+        basket = request.session.get("basket", {})
+        if product_id not in basket:
+            return Response(status=200)
 
-        if count >= basket[basket_id]["count"]:
-            del basket[basket_id]
+        if count >= basket[product_id]["count"]:
+            del basket[product_id]
         else:
-            basket[basket_id]["count"] -= count
+            basket[product_id]["count"] -= count
 
         request.session.modified = True
-        return Response(["Item deleted"])
-
-
-
+        return Response(status=200)

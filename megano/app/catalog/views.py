@@ -59,7 +59,7 @@ class ProductAPIView(APIView):
                 "images",
                 "tags",
                 "specifications",
-                "reviews"
+                "review_list"
             ),
             id=id
         )
