@@ -4,7 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import UserSerializer, SignUpSerializer, SignInSerializer
+from app.basket.services import BasketService
 from app.core.models import Image
+from app.catalog.models import Product
+from app.basket.models import Basket
 
 class ProfileAPIView(APIView):
     def get(self, request):
@@ -67,7 +70,8 @@ class SignUpAPIView(APIView):
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()
+        login(request, user)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -75,7 +79,22 @@ class SignInAPIView(APIView):
     def post(self, request):
         serializer = SignInSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        login(request, serializer.validated_data["user"])
+
+        user = serializer.validated_data["user"]
+
+        guest_items = BasketService.get_items(request)
+
+        login(request, user)
+
+        for item in guest_items:
+            BasketService.add(
+                request,
+                product_id=item["product"].id,
+                count=item["count"]
+            )
+
+        BasketService.clear(request)
+
         return Response(status=status.HTTP_200_OK)
 
 

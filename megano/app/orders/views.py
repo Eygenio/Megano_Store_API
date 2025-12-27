@@ -11,7 +11,7 @@ from .utils import get_basket_items
 class OrderAPIView(APIView):
     def get(self, request):
         if not request.user.is_authenticated:
-            return Response([], status=200)
+            return Response(status=401)
 
         orders = (
             Order.objects
