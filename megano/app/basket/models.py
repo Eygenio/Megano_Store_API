@@ -5,8 +5,9 @@ from app.users.models import User
 
 
 class Basket(models.Model):
-    """Модель Basket - это модель "корзины"
-    в интернет-магазине"""
+    """
+    Модель "корзины" в интернет-магазине.
+    """
 
     user = models.ForeignKey(
         User,
@@ -14,7 +15,7 @@ class Basket(models.Model):
         related_name="basket",
         null=True,
         blank=True
-        )
+    )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,

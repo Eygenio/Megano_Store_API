@@ -6,8 +6,9 @@ from app.users.models import User
 
 
 class Category(models.Model):
-    """Модель Category - это модель категорий товаров,
-    которые представлены в интернет-магазине"""
+    """
+    Модель категорий товаров в интернет-магазине.
+    """
 
     title = models.CharField(max_length=255)
     image = models.OneToOneField(
@@ -22,7 +23,7 @@ class Category(models.Model):
         on_delete=models.CASCADE,
         related_name="subcategories",
         blank=True,
-        null=True
+        null=True,
     )
 
     def __str__(self):
@@ -30,15 +31,20 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
-    """Модель Tag - это модель "тэгов" товаров,
-        которые представлены в интернет-магазине"""
+    """
+    Модель "тэгов" товаров в интернет-магазине.
+    """
 
     name = models.CharField(max_length=255, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Review(models.Model):
-    """Модель Review - это модель отзывов на товары,
-        которые представлены в интернет-магазине"""
+    """
+    Модель отзывов на товары в интернет-магазине.
+    """
 
     product = models.ForeignKey(
         "Product",
@@ -55,12 +61,7 @@ class Review(models.Model):
     author = models.CharField(max_length=255)
     email = models.EmailField()
     text = models.CharField(max_length=1000, blank=True, null=True)
-    rate = models.IntegerField(
-        validators=[
-            MinValueValidator(0),
-            MaxValueValidator(5)
-        ]
-    )
+    rate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -68,8 +69,9 @@ class Review(models.Model):
 
 
 class Specification(models.Model):
-    """Модель Specification - это модель характеристик товаров,
-        которые представлены в интернет-магазине"""
+    """
+    Модель характеристик товаров в интернет-магазине.
+    """
 
     product = models.ForeignKey(
         "Product",
@@ -81,8 +83,9 @@ class Specification(models.Model):
 
 
 class Product(models.Model):
-    """Модель Product - это модель товаров,
-        которые представлены в интернет-магазине"""
+    """
+    Модель товаров в интернет-магазине.
+    """
 
     category = models.ForeignKey(
         Category,
@@ -107,11 +110,7 @@ class Product(models.Model):
         blank=True,
     )
     reviews = models.IntegerField(default=0)
-    rating = models.DecimalField(
-        max_digits=2,
-        decimal_places=1,
-        default=0
-    )
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0)
     sortIndex = models.IntegerField(default=0)
     purchases = models.IntegerField(default=0)
     limited = models.BooleanField(default=False)
@@ -121,12 +120,14 @@ class Product(models.Model):
 
 
 class Sales(models.Model):
-    """Модель Sales - это модель скидки на товары,
-        которые представлены в интернет-магазине"""
+    """
+    Модель скидок на товары в интернет-магазине.
+    """
 
-    product = models.ForeignKey(
+    product = models.OneToOneField(
         Product,
         on_delete=models.CASCADE,
+        primary_key=True,
         related_name="sales"
     )
     salePrice = models.DecimalField(max_digits=10, decimal_places=2)

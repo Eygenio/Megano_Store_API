@@ -5,6 +5,11 @@ from app.catalog.serializers import ImageSerializer, TagSerializer
 
 
 class OrderProductSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор товара в заказе.
+    Используется для создания заказа.
+    """
+
     category = serializers.IntegerField(source="category_id")
     images = ImageSerializer(many=True)
     tags = TagSerializer(many=True)
@@ -28,6 +33,12 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор заказа.
+    Исользуется для создания заказа,
+    возврата списка заказов и возврата заказа по ID.
+    """
+
     products = OrderProductSerializer(many=True)
 
     class Meta:

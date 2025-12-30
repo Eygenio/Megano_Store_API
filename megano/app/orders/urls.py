@@ -6,6 +6,6 @@ from .views import OrderAPIView, OrderIDAPIView
 app_name = "orders"
 
 urlpatterns = [
-    path("", OrderAPIView.as_view(), name="orders"),
-    path("<int:id>/", OrderIDAPIView.as_view(), name="order"),
+    path("orders/", OrderAPIView.as_view(), name="orders"),
+    path("order/<int:id>/", OrderIDAPIView.as_view(), name="order"),
 ]

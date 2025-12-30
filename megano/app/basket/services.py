@@ -9,6 +9,9 @@ class BasketService:
 
     @classmethod
     def _get_session_basket(cls, request) -> dict:
+        """
+        Возвращает гостевую корзину.
+        """
         basket = request.session.get(cls.SESSION_KEY)
         if not isinstance(basket, dict):
             basket = {}
@@ -17,40 +20,37 @@ class BasketService:
 
     @classmethod
     def get_items(cls, request):
-
+        """
+        Возвращает товары из корзины.
+        """
         if request.user.is_authenticated:
             items = (
-                Basket.objects
-                .filter(user=request.user)
+                Basket.objects.filter(user=request.user)
                 .select_related("product", "product__category")
                 .prefetch_related("product__images", "product__tags")
             )
-            return [
-                {"product": item.product, "count": item.count}
-                for item in items
-            ]
+            return [{"product": item.product, "count": item.count} for item in items]
 
         session_basket = cls._get_session_basket(request)
         if not session_basket:
             return []
 
         products = (
-            Product.objects
-            .filter(id__in=session_basket.keys())
+            Product.objects.filter(id__in=session_basket.keys())
             .select_related("category")
             .prefetch_related("images", "tags")
         )
 
         return [
-            {
-                "product": product,
-                "count": session_basket[str(product.id)]["count"]
-            }
+            {"product": product, "count": session_basket[str(product.id)]["count"]}
             for product in products
         ]
 
     @classmethod
     def add(cls, request, product_id, count=1):
+        """
+        Добалвение товара в корзину.
+        """
         count = int(count)
         product = get_object_or_404(Product, id=product_id)
 
@@ -61,7 +61,7 @@ class BasketService:
                 defaults={
                     "count": count,
                     "price": product.price * count,
-                }
+                },
             )
             if not created:
                 item.count += count
@@ -76,6 +76,9 @@ class BasketService:
 
     @classmethod
     def remove(cls, request, product_id, count=1):
+        """
+        Удаление товара из корзины.
+        """
         count = int(count)
 
         if request.user.is_authenticated:
@@ -107,6 +110,9 @@ class BasketService:
 
     @classmethod
     def clear(cls, request):
+        """
+        Очистка корзины.
+        """
         if request.user.is_authenticated:
             Basket.objects.filter(user=request.user).delete()
         else:

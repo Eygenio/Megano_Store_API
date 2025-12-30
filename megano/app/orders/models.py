@@ -1,13 +1,14 @@
 from django.db import models
 
+from app.catalog.models import Product, Category, Tag
 from app.users.models import User
 from app.core.models import Image
-from app.catalog.models import Product, Category, Tag
 
 
 class Order(models.Model):
-    """Модель Order - это общая модель заказа
-    в интернет-магазине"""
+    """
+    Модель всего заказа в интернет-магазине.
+    """
 
     user = models.ForeignKey(
         User,
@@ -15,7 +16,7 @@ class Order(models.Model):
         related_name="orders",
         null=True,
         blank=True
-        )
+    )
     createdAt = models.DateTimeField(auto_now_add=True)
     fullName = models.CharField(max_length=255)
     email = models.EmailField()
@@ -32,8 +33,9 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    """Модель OrderItem - это модель заказа товаров
-    в интернет-магазине"""
+    """
+    Модель единицы товара в заказе в интернет-магазине.
+    """
 
     order = models.ForeignKey(
         Order,
@@ -64,3 +66,16 @@ class OrderItem(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     reviews = models.IntegerField(default=0)
     rating = models.DecimalField(max_digits=2, decimal_places=1, default=0)
+
+
+class DeliverySettings(models.Model):
+    """
+    Модель настройки доставки.
+    """
+
+    free_delivery_threshold = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
+    express_delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return "Delivery settings"

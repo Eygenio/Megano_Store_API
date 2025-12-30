@@ -2,8 +2,12 @@ from rest_framework import serializers
 
 
 class PaymentSerializer(serializers.Serializer):
-    number = serializers.CharField(max_length=20)
-    name = serializers.CharField(max_length=255)
-    month = serializers.CharField(max_length=2)
-    year = serializers.CharField(max_length=4)
-    code = serializers.CharField(max_length=4)
+    """
+    Сериализатор для оплаты заказа.
+    """
+
+    number = serializers.CharField(max_length=20, allow_blank=True)
+    name = serializers.CharField(max_length=255, allow_blank=True)
+    month = serializers.CharField(max_length=2, allow_blank=True)
+    year = serializers.CharField(max_length=4, allow_blank=True)
+    code = serializers.CharField(max_length=4, allow_blank=True)

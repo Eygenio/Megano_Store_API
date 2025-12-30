@@ -24,5 +24,5 @@ urlpatterns = [
     path("banners/", BannerListAPIView.as_view(), name="banners"),
     path("tags/", TagListAPIView.as_view(), name="tags"),
     path("product/<int:id>/", ProductAPIView.as_view(), name="product"),
-    path("product/<int:id>/review/", ReviewAPIView.as_view(), name="product_review"),
+    path("product/<int:id>/reviews/", ReviewAPIView.as_view(), name="product_review"),
 ]

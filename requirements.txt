@@ -1,0 +1,9 @@
+asgiref==3.11.0
+Django==6.0
+django-request-logging==0.7.5
+djangorestframework==3.16.1
+psycopg==3.2.3
+gunicorn==23.0.0
+setuptools==80.9.0
+sqlparse==0.5.4
+whitenoise==6.7.0

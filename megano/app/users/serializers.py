@@ -6,6 +6,11 @@ from app.core.serializers import ImageSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор пользователя.
+    Используется для выведения информации о пользователе.
+    """
+
     fullName = serializers.CharField(source="fullname")
     avatar = ImageSerializer(required=False, allow_null=True)
 
@@ -15,17 +20,30 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """
+    Сеериализатор для регистарции пользователя.
+    """
+
     password = serializers.CharField(write_only=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(required=False, allow_blank=True)
+    fullname = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = User
         fields = ("username", "email", "password", "fullname", "phone")
 
     def create(self, validated_data):
-        if "username" not in validated_data:
-            validated_data["username"] = validated_data["email"]
-
+        """
+        Создает пользователя.
+        """
         password = validated_data.pop("password")
+        if not validated_data.get("fullname"):
+            validated_data["fullname"] = validated_data.get("username", "")
+
+        if not validated_data.get("email"):
+            validated_data["email"] = f'{validated_data["username"]}@example.com'
+
         user = User(**validated_data)
         user.set_password(password)
         user.save()
@@ -33,15 +51,18 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class SignInSerializer(serializers.Serializer):
+    """
+    Сериализатор для входа пользователя.
+    """
+
     username = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
-
-        user = authenticate(
-            username=data["username"],
-            password=data["password"]
-        )
+        """
+        Проверяет, валидность данных для входа.
+        """
+        user = authenticate(username=data["username"], password=data["password"])
         if not user:
             raise serializers.ValidationError("Invalid credentials")
         data["user"] = user

@@ -4,8 +4,9 @@ from app.orders.models import Order
 
 
 class Payment(models.Model):
-    """Модель Payment - это модель оплаты
-    в интернет-магазине"""
+    """
+    Модель оплаты в интернет-магазине.
+    """
 
     order = models.OneToOneField(
         Order,
@@ -19,7 +20,7 @@ class Payment(models.Model):
             ("pending", "Pending"),
             ("paid", "Paid"),
             ("failed", "Failed"),
-        ]
+        ],
     )
     createAt = models.DateTimeField(auto_now_add=True)
     transactionId = models.CharField(

@@ -5,6 +5,11 @@ from app.core.serializers import ImageSerializer
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
+    """
+    Сериализатор подкатегории товара.
+    Используется в сериализаторе категории товаров.
+    """
+
     image = ImageSerializer()
 
     class Meta:
@@ -13,6 +18,11 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    Сериализатор категории товара.
+    Используется для каталога товаров.
+    """
+
     image = ImageSerializer()
     subcategories = SubCategorySerializer(many=True)
 
@@ -20,26 +30,52 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("id", "title", "image", "subcategories")
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        return ret
+
 
 class TagSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор 'тегов'.
+    Используется для возврата спискка 'тегов'.
+    """
+
     class Meta:
         model = Tag
         fields = ("id", "name")
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор отзывов на ттовары.
+    Используется для добавленния отзыва к товару.
+    """
+
     class Meta:
         model = Review
         fields = ("author", "email", "text", "rate", "date")
 
 
 class SpecificationSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор характеристик товара.
+    Используется в ссериализаторе полной информации о товаре.
+    """
+
     class Meta:
         model = Specification
         fields = ("name", "value")
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для выведения информации
+    о товаре.
+    Используется для выведения популярного, лимитируемого,
+    списка товаров, а также списка тоавров для каталога и баннера.
+    """
+
     category = serializers.IntegerField(source="category_id")
     images = ImageSerializer(many=True)
     tags = TagSerializer(many=True)
@@ -58,11 +94,17 @@ class ProductSerializer(serializers.ModelSerializer):
             "images",
             "tags",
             "reviews",
-            "rating"
+            "rating",
         )
 
 
 class ProductFullSerializer(serializers.ModelSerializer):
+    """
+    Сериалазатор для выведения полной
+    инфоормации о товаре.
+    Используется для выведения информации по ID товара.
+    """
+
     category = serializers.IntegerField(source="category_id")
     images = ImageSerializer(many=True)
     tags = TagSerializer(many=True)
@@ -85,15 +127,20 @@ class ProductFullSerializer(serializers.ModelSerializer):
             "tags",
             "reviews",
             "specifications",
-            "rating"
+            "rating",
         )
 
 
 class SalesSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор товаров на скидке.
+    Исппользуется для возврата списка товаров на скидке.
+    """
+
+    id = serializers.IntegerField(source="product.id", read_only=True)
+
     price = serializers.DecimalField(
-        source="product.price",
-        max_digits=10,
-        decimal_places=2
+        source="product.price", max_digits=10, decimal_places=2
     )
     title = serializers.CharField(source="product.title")
     images = serializers.SerializerMethodField()
@@ -111,4 +158,14 @@ class SalesSerializer(serializers.ModelSerializer):
         )
 
     def get_images(self, obj):
-        return [img.src for img in obj.product.images.all()]
+        """
+        Добавляет только основную ссылку
+        на изображение товара на скидке.
+        """
+        request = self.context.get("request")
+
+        return ImageSerializer(
+            obj.product.images.all(),
+            many=True,
+            context={"request": request}
+        ).data

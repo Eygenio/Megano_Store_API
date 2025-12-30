@@ -5,8 +5,9 @@ from app.core.models import Image
 
 
 class User(AbstractUser):
-    """Модель User - это модель пользователя,
-        которые зарегистрированы в интернет-магазине"""
+    """
+    Модель пользователя в интернет-магазине.
+    """
 
     fullname = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)

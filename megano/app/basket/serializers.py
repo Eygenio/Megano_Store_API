@@ -1,10 +1,14 @@
 from rest_framework import serializers
 
 from .models import Basket
-from app.catalog.serializers import ImageSerializer,TagSerializer
+from app.catalog.serializers import ImageSerializer, TagSerializer
 
 
 class BasketSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор корзины.
+    """
+
     category = serializers.IntegerField(source="product.category_id")
     title = serializers.CharField(source="product.title")
     description = serializers.CharField(source="product.description")
@@ -17,6 +21,7 @@ class BasketSerializer(serializers.ModelSerializer):
         max_digits=2,
         decimal_places=1,
     )
+
     class Meta:
         model = Basket
         fields = (
