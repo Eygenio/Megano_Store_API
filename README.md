@@ -152,7 +152,7 @@ project/
 ## 1. Клонировать репозиторий
 
 ```bash
-git clone https://gitlab.skillbox.ru/evgenii_nemchenko_1/python_django_diploma.git
+git clone https://github.com/Eygenio/Megano_Store_API.git
 ```
 
 ## 2. Создать `.env` или скопируйте содержимое `.env.template` в `.env`
