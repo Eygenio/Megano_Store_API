@@ -202,3 +202,4 @@ http://0.0.0.0:8080/admin/
 * Переменные окружения через `.env`
 
 ---# Megano_Store_API
+# Megano_Store_API
