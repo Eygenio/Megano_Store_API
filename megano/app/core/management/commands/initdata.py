@@ -1,7 +1,7 @@
 import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from app.catalog.models import Category, Product, Tag, Sales
+from app.catalog.models import Category, Product, Tag
 from app.core.models import Image
 from app.orders.models import DeliverySettings
 

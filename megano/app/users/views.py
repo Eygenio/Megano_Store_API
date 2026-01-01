@@ -11,7 +11,6 @@ from .serializers import UserSerializer, SignUpSerializer, SignInSerializer
 from .utils import FormJSONParser
 from app.basket.services import BasketService
 from app.core.models import Image
-from app.catalog.models import Product
 
 
 class ProfileAPIView(APIView):

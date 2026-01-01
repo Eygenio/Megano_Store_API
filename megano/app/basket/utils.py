@@ -1,4 +1,3 @@
-from app.catalog.models import Product
 from app.core.serializers import ImageSerializer
 from app.catalog.serializers import TagSerializer
 
