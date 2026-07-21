@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import BasketAPIView
-
+from app.basket.interfaces.views import BasketAPIView
 
 app_name = "basket"
 

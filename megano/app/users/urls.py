@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import ProfileAPIView, ProfilePasswordAPIView, ProfileAvatarAPIView
-
+from app.users.views import ProfileAPIView, ProfileAvatarAPIView, ProfilePasswordAPIView
 
 app_name = "users"
 

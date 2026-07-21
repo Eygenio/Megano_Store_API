@@ -1,19 +1,26 @@
-FROM python:3.13
+FROM python:3.13-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update && apt-get install -y netcat-openbsd
+RUN apt-get update && apt-get install -y \
+    netcat-openbsd \
+    curl \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
 COPY . .
 
-RUN pip install diploma-frontend/dist/diploma-frontend-0.6.tar.gz
+RUN uv sync --frozen --no-dev
+ENV PATH="/app/.venv/bin:$PATH"
+
+RUN uv pip install diploma-frontend/dist/diploma-frontend-0.6.tar.gz
 
 WORKDIR /app/megano
 

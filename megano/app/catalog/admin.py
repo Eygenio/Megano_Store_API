@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Tag, Review, Specification, Product, Sales
+from app.catalog.models import Category, Product, Review, Sales, Specification, Tag
 
 
 @admin.register(Category)
@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     Category._meta.verbose_name_plural = "Categories"
 
-    def indented_title(self, obj):
+    def indented_title(self, obj: Category) -> str:
         level = 0
         parent = obj.parent
         while parent:

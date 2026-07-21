@@ -1,17 +1,16 @@
 from django.urls import path
 
-from .views import (
+from app.catalog.interfaces.views import (
+    BannerListAPIView,
+    CatalogAPIView,
     CategoriesListAPIView,
-    ProductPopularAPIView,
-    ProductLimitedAPIView,
     ProductAPIView,
+    ProductLimitedAPIView,
+    ProductPopularAPIView,
     ReviewAPIView,
     SalesAPIView,
     TagListAPIView,
-    BannerListAPIView,
-    CatalogAPIView,
 )
-
 
 app_name = "catalog"
 

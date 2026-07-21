@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Image
+from app.core.models import Image
 
 
 @admin.register(Image)

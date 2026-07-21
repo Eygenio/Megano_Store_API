@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from app.core.models import Image
@@ -6,17 +6,9 @@ from app.users.models import User
 
 
 class Category(models.Model):
-    """
-    Модель категорий товаров в интернет-магазине.
-    """
-
     title = models.CharField(max_length=255)
     image = models.OneToOneField(
-        Image,
-        on_delete=models.CASCADE,
-        related_name="category",
-        null=True,
-        blank=True
+        Image, on_delete=models.CASCADE, related_name="category", null=True, blank=True
     )
     parent = models.ForeignKey(
         "self",
@@ -26,37 +18,23 @@ class Category(models.Model):
         null=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
 
 class Tag(models.Model):
-    """
-    Модель "тэгов" товаров в интернет-магазине.
-    """
-
     name = models.CharField(max_length=255, unique=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
 class Review(models.Model):
-    """
-    Модель отзывов на товары в интернет-магазине.
-    """
-
     product = models.ForeignKey(
-        "Product",
-        on_delete=models.CASCADE,
-        related_name="review_list"
+        "Product", on_delete=models.CASCADE, related_name="review_list"
     )
     user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name="reviews",
-        null=True,
-        blank=True
+        User, on_delete=models.SET_NULL, related_name="reviews", null=True, blank=True
     )
     author = models.CharField(max_length=255)
     email = models.EmailField()
@@ -64,29 +42,19 @@ class Review(models.Model):
     rate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     date = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.author} ({self.rate})"
 
 
 class Specification(models.Model):
-    """
-    Модель характеристик товаров в интернет-магазине.
-    """
-
     product = models.ForeignKey(
-        "Product",
-        on_delete=models.CASCADE,
-        related_name="specifications"
+        "Product", on_delete=models.CASCADE, related_name="specifications"
     )
     name = models.CharField(max_length=255)
     value = models.CharField(max_length=255)
 
 
 class Product(models.Model):
-    """
-    Модель товаров в интернет-магазине.
-    """
-
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -99,11 +67,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     fullDescription = models.TextField(blank=True, null=True)
     freeDelivery = models.BooleanField(default=False)
-    images = models.ManyToManyField(
-        Image,
-        related_name="products",
-        blank=True
-    )
+    images = models.ManyToManyField(Image, related_name="products", blank=True)
     tags = models.ManyToManyField(
         Tag,
         related_name="products",
@@ -115,20 +79,13 @@ class Product(models.Model):
     purchases = models.IntegerField(default=0)
     limited = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
 
 class Sales(models.Model):
-    """
-    Модель скидок на товары в интернет-магазине.
-    """
-
     product = models.OneToOneField(
-        Product,
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name="sales"
+        Product, on_delete=models.CASCADE, primary_key=True, related_name="sales"
     )
     salePrice = models.DecimalField(max_digits=10, decimal_places=2)
     dateFrom = models.DateField()

@@ -1,0 +1,36 @@
+from config.settings import settings
+
+DEBUG = settings.DEBUG
+BASE_DIR = settings.BASE_DIR
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
+STATIC_URL = settings.STATIC_URL
+STATIC_ROOT = settings.STATIC_ROOT
+MEDIA_URL = settings.MEDIA_URL
+MEDIA_ROOT = settings.MEDIA_ROOT
+SECRET_KEY = settings.SECRET_KEY
+INSTALLED_APPS = settings.INSTALLED_APPS
+MIDDLEWARE = settings.MIDDLEWARE
+ROOT_URLCONF = settings.ROOT_URLCONF
+TEMPLATES = settings.TEMPLATES
+WSGI_APPLICATION = settings.WSGI_APPLICATION
+LANGUAGE_CODE = settings.LANGUAGE_CODE
+TIME_ZONE = settings.TIME_ZONE
+USE_I18N = settings.USE_I18N
+USE_TZ = settings.USE_TZ
+AUTH_PASSWORD_VALIDATORS = settings.AUTH_PASSWORD_VALIDATORS
+AUTH_USER_MODEL = settings.AUTH_USER_MODEL
+STATICFILES_STORAGE = settings.STATICFILES_STORAGE
+USE_X_FORWARDED_HOST = settings.USE_X_FORWARDED_HOST
+SECURE_PROXY_SSL_HEADER = settings.SECURE_PROXY_SSL_HEADER
+FORCE_SCRIPT_NAME = settings.FORCE_SCRIPT_NAME
+
+SECRET_KEY = "test-secret-key"
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "test_db.sqlite3",
+    }
+}
+
+INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "frontend"]
