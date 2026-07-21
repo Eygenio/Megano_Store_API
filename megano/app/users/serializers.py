@@ -1,16 +1,13 @@
+from typing import Any
+
 from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import User
 
 from app.core.serializers import ImageSerializer
+from app.users.models import User
+from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор пользователя.
-    Используется для выведения информации о пользователе.
-    """
-
     fullName = serializers.CharField(source="fullname")
     avatar = ImageSerializer(required=False, allow_null=True)
 
@@ -20,10 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    """
-    Сеериализатор для регистарции пользователя.
-    """
-
     password = serializers.CharField(write_only=True)
     email = serializers.EmailField(required=False, allow_blank=True)
     phone = serializers.CharField(required=False, allow_blank=True)
@@ -33,10 +26,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email", "password", "fullname", "phone")
 
-    def create(self, validated_data):
-        """
-        Создает пользователя.
-        """
+    def create(self, validated_data: dict[str, Any]) -> User:
         password = validated_data.pop("password")
         if not validated_data.get("fullname"):
             validated_data["fullname"] = validated_data.get("username", "")
@@ -51,17 +41,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class SignInSerializer(serializers.Serializer):
-    """
-    Сериализатор для входа пользователя.
-    """
-
     username = serializers.CharField()
     password = serializers.CharField()
 
-    def validate(self, data):
-        """
-        Проверяет, валидность данных для входа.
-        """
+    def validate(self, data) -> dict[str, Any]:
         user = authenticate(username=data["username"], password=data["password"])
         if not user:
             raise serializers.ValidationError("Invalid credentials")

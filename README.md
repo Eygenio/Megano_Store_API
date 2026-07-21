@@ -1,164 +1,141 @@
 # 🛒 Megano Store API v1.0.0 — Django + DRF + PostgreSQL + Docker
 
-Backend-приложение интернет-магазина, реализующее каталог товаров, корзину, заказы, оплату и пользователей.  
-Проект выполнен в виде модульной Django-архитектуры с REST API и поддержкой Docker.
+Backend for an online store: product catalog, shopping cart, orders, payments, and user management.  
+Built with a modular Django architecture, REST API, and full Docker support.
 
-> ⚠️ Проект реализован **только в части backend**.  
-> Frontend предоставлен готовым и использовался для интеграции и тестирования API.
-
----
-
-## ✨ Возможности
-
-* 🧑 Пользователи и аутентификация
-* 🗂 Каталог товаров и категорий
-* 🏷 Теги, скидки и фильтрация
-* 🛒 Корзина (session + DB)
-* 📦 Заказы и позиции заказа
-* 💳 Оплата заказов
-* 🖼 Медиафайлы (изображения товаров)
-* 🛠 Админ-панель Django
-* 🐳 Полная поддержка Docker + docker-compose
-* 📡 REST API (Django REST Framework)
+> ⚠️ The project implements the **backend only**.  
+> The frontend is provided as a ready-made package and was used for API integration and testing.
 
 ---
 
-## 🏗️ Архитектура проекта
+## ✨ Features
+
+* 👤 Users & authentication  
+* 🗂 Product catalog with categories  
+* 🏷 Tags, discounts, filtering & sorting  
+* 🛒 Shopping cart (session-based and DB-backed)  
+* 📦 Orders with line items  
+* 💳 Order payment simulation  
+* 🖼 Media files (product images)  
+* 🛠 Django admin panel  
+* 🐳 Full Docker & docker-compose support  
+* 🧪 Automated tests (unit, integration, e2e)  
+* 🌐 Nginx reverse proxy for static/media and proxying to Gunicorn  
+* 📦 Dependency management with `uv`  
+* 🧹 Code quality tools: `black`, `isort`, `flake8`, `mypy`  
+* 📝 Structured logging with `colorlog`
+
+---
+
+## 🏗️ Architecture
+
+The project follows **Clean Architecture** principles with clear separation of concerns:
+
+* **Domain** – pure business logic, no framework dependencies  
+* **Application** – use cases orchestrating domain services and repositories  
+* **Infrastructure** – Django ORM repositories and other external concerns  
+* **Interfaces** – DRF views, serializers, and URL routing  
+* **DTOs** – explicit data transfer objects between layers  
+* **Constants** – shared values extracted into dedicated modules 
 
 ```
 project/
 ├── megano/
 │   ├── app/
 │   │ ├── basket/
-│   │ │ ├── models.py
-│   │ │ ├── services.py
-│   │ │ ├── serializers.py   
-│   │ │ ├── tests.py
-│   │ │ ├── urls.py
-│   │ │ ├── utils.py
-│   │ │ └── views.py
-│   │ ├── catalog/
-│   │ │ ├── models.py
-│   │ │ ├── serializers.py
-│   │ │ ├── tests.py
-│   │ │ ├── urls.py
-│   │ │ └── views.py    
-│   │ ├── core/
-│   │ │ └── management/
-│   │ │ │   └── commands/
-│   │ │ │       └── initdata.py
-│   │ │ ├── models.py
-│   │ │ ├── pagination.py
-│   │ │ └── serializers.py    
+│   │ │ ├── domain
+│   │ │ ├── application
+│   │ │ ├── infrastructure   
+│   │ │ └── interfaces
+│   │ ├── catalog/ 
+│   │ ├── core/  
 │   │ ├── orders/
-│   │ │ ├── models.py
-│   │ │ ├── serializers.py
-│   │ │ ├── tests.py
-│   │ │ ├── urls.py
-│   │ │ └── views.py 
 │   │ ├── payment/
-│   │ │ ├── models.py
-│   │ │ ├── serializers.py
-│   │ │ ├── urls.py
-│   │ │ └── views.py 
 │   │ ├── users/
-│   │ │ ├── auth_urls.py
-│   │ │ ├── models.py
-│   │ │ ├── serializers.py   
-│   │ │ ├── urls.py
-│   │ │ ├── utils.py
-│   │ │ └── views.py
 │   │ └── utils/
 │   ├── config/
-│   │ ├── settings/
-│   │ │ ├── base.py
-│   │ │ ├── dev.py
-│   │ │ └── prod.py
-│   │ ├── urls.py
-│   │ ├── wsgi.py
-│   │ └── asgi.py
 │   ├── media/
-│
+│   └── tests/
 ├── diploma-frontend/
 ├── Dockerfile
 ├── docker-compose.yaml
-├── entrypoint.sh
 ├── .env
 ├── manage.py
-├── requirements.txt
 └── README.md
 
 ```
 
 ---
 
-## 🧰 Используемые технологии
+## 🧰 Technology Stack
 
 * Python 3.13
-* Django 6
+* Django 6.0
 * Django REST Framework
 * PostgreSQL
-* WhiteNoise (static files)
+* Gunicorn 
+* Nginx  
+* WhiteNoise
 * Docker / docker-compose
-* Pytest
+* `uv` (dependency management)  
+* Pytest (with markers for unit / integration / e2e)  
+* `mypy`, `flake8`, `black`, `isort`
 
 ---
 
-## 💡 Функциональность
+## 💡 Functionality
 
-### 👤 Пользователи
+### 👤 Users
 
-* регистрация
-* аутентификация
-* профиль пользователя
-
----
-
-### 🗂 Каталог
-
-* категории
-* товары
-* теги
-* изображения товаров
-* скидки
-* фильтрация и сортировка
+* Registration 
+* Authentication (session-based)  
+* Profile & avatar management  
 
 ---
 
-### 🛒 Корзина
+### 🗂 Catalog
 
-* добавление / удаление товаров
-* хранение в session и базе
-* подсчёт стоимости
-
----
-
-### 📦 Заказы
-
-* оформление заказа
-* позиции заказа
-* история заказов пользователя
-* расчёт итоговой стоимости
+* Categories (tree)  
+* Products with images, tags, descriptions  
+* Sales / discounts 
+* Filtering, sorting, and pagination  
 
 ---
 
-### 💳 Оплата
+### 🛒 Cart
 
-* проверка платежного кода
-* симуляция оплаты заказа
-* изменение статуса заказа
+* Add / remove items  
+* Support for both anonymous (session) and authenticated (DB) users
+* Price calculation  
 
 ---
 
-# 🚀 Запуск проекта (локально)
+### 📦 Orders
 
-## 1. Клонировать репозиторий
+* Order creation from basket  
+* Order history  
+* Delivery cost calculation  
+* Status management 
+
+---
+
+### 💳 Payment
+
+* Payment simulation (card data validation)  
+* Transaction ID generation  
+* Order status update  
+
+---
+
+# 🚀 Getting Started
+
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/Eygenio/Megano_Store_API.git
 ```
 
-## 2. Создать `.env` или скопируйте содержимое `.env.template` в `.env`
+## 2. Create a `.env` file (or copy the template)
 
 ```
 DB_NAME=
@@ -166,41 +143,58 @@ DB_USER=
 DB_PASSWORD=
 DB_HOST=
 DB_PORT=
+
+DJANGO_SETTINGS_MODULE=
+DJANGO_ALLOWED_HOSTS=
+DJANGO_SECRET_KEY=
+
 DJANGO_SUPERUSER_USERNAME=
 DJANGO_SUPERUSER_PASSWORD=
 DJANGO_SUPERUSER_EMAIL=
 ```
 
-## 3. 🐳 Сборка через Docker
+## 3. 🐳 Build & run with Docker
 
 ```bash
 docker-compose build
-```
-
-## 4. 🐳 Запуск через Docker
-
-```bash
 docker-compose up -d
 ```
+The application will be available at `http://0.0.0.0:8080/`.
+The admin panel is at `http://0.0.0.0:8080/admin/`.
 
-## 🔗 Доступ к сервису
+---
+# 🧪 Testing
 
+Tests are located in the tests/ folder and are organized by scope:
+
+* Unit – domain services, pure logic
+* Integration – API endpoints with test database
+* E2E – complete user workflows
+
+Run all tests:
 ```bash
-http://0.0.0.0:8080/ 
-```
-
-## 🔗 Доступ к "Админке"
-
-```bash
-http://0.0.0.0:8080/admin/
+pytest -v
 ```
 
 ---
 
-# 🔐 Безопасность
+# 🧹 Code Quality
+The project enforces consistent code style and type checking:
 
-* DEBUG = False в production
-* PostgreSQL изолирован Docker'ом
-* WhiteNoise для безопасной раздачи статики
-* Переменные окружения через `.env`
+```bash
+black .          # code formatting
+isort .          # import sorting
+flake8 megano    # linting
+mypy megano      # static type checking
+```
+
+---
+
+# 🔐 Security
+
+* `DEBUG = False` in production (managed via environment)
+* PostgreSQL isolated inside Docker
+* WhiteNoise serves static files efficiently
+* All sensitive data is stored in environment variables
+* Nginx acts as a reverse proxy and serves media files
 

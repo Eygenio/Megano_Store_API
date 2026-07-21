@@ -1,9 +1,8 @@
 from django.urls import path
 
-from .views import SignUpAPIView, SignInAPIView, SignOutAPIView
+from app.users.views import SignInAPIView, SignOutAPIView, SignUpAPIView
 
-
-app_name = "users"
+app_name = "auth"
 
 urlpatterns = [
     path("sign-in/", SignInAPIView.as_view(), name="sign-in"),

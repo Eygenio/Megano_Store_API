@@ -4,14 +4,8 @@ from app.orders.models import Order
 
 
 class Payment(models.Model):
-    """
-    Модель оплаты в интернет-магазине.
-    """
-
     order = models.OneToOneField(
-        Order,
-        on_delete=models.CASCADE,
-        related_name="payment"
+        Order, on_delete=models.CASCADE, related_name="payment"
     )
     status = models.CharField(
         max_length=20,
@@ -29,5 +23,5 @@ class Payment(models.Model):
         null=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Payment for order #{self.order}"

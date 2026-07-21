@@ -1,21 +1,13 @@
 from django.db import models
 
-from app.catalog.models import Product, Category, Tag
-from app.users.models import User
+from app.catalog.models import Category, Product, Tag
 from app.core.models import Image
+from app.users.models import User
 
 
 class Order(models.Model):
-    """
-    Модель всего заказа в интернет-магазине.
-    """
-
     user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name="orders",
-        null=True,
-        blank=True
+        User, on_delete=models.SET_NULL, related_name="orders", null=True, blank=True
     )
     createdAt = models.DateTimeField(auto_now_add=True)
     fullName = models.CharField(max_length=255)
@@ -28,20 +20,12 @@ class Order(models.Model):
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Order #{self.id}"
 
 
 class OrderItem(models.Model):
-    """
-    Модель единицы товара в заказе в интернет-магазине.
-    """
-
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name="products"
-    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="products")
     product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
@@ -53,9 +37,7 @@ class OrderItem(models.Model):
         on_delete=models.PROTECT,
     )
     price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        help_text="(price * count)"
+        max_digits=10, decimal_places=2, help_text="(price * count)"
     )
     count = models.PositiveIntegerField()
     date = models.DateTimeField(auto_now_add=True)
@@ -69,13 +51,9 @@ class OrderItem(models.Model):
 
 
 class DeliverySettings(models.Model):
-    """
-    Модель настройки доставки.
-    """
-
     free_delivery_threshold = models.DecimalField(max_digits=10, decimal_places=2)
     delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
     express_delivery_price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Delivery settings"

@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import PaymentAPIView
-
+from app.payment.interfaces.views import PaymentAPIView
 
 app_name = "payment"
 

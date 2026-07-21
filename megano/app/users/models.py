@@ -5,10 +5,6 @@ from app.core.models import Image
 
 
 class User(AbstractUser):
-    """
-    Модель пользователя в интернет-магазине.
-    """
-
     fullname = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
     phone = models.CharField(max_length=255)
@@ -20,5 +16,5 @@ class User(AbstractUser):
         blank=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.fullname

@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import OrderAPIView, OrderIDAPIView
-
+from app.orders.interfaces.views import OrderAPIView, OrderIDAPIView
 
 app_name = "orders"
 
